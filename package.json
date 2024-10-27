@@ -1,0 +1,41 @@
+{
+	"name": "traders-fund-chat",
+	"version": "0.1.0",
+	"private": true,
+	"scripts": {
+		"dev": "next dev",
+		"build": "next build",
+		"start": "next start",
+		"lint": "next lint",
+		"format": "npx prettier --write .",
+		"prepare": "npx husky install",
+		"test": "echo \"Error: no test specified\" && exit 0",
+		"commit": "commit",
+		"analyze": "cross-env ANALYZE=true next build"
+	},
+	"dependencies": {
+		"next": "14.2.11",
+		"react": "^18.3.1",
+		"react-dom": "^18.3.1"
+	},
+	"devDependencies": {
+		"@commitlint/cli": "^19.5.0",
+		"@commitlint/config-conventional": "^19.5.0",
+		"@commitlint/prompt-cli": "^19.5.0",
+		"@next/bundle-analyzer": "^14.2.11",
+		"@types/node": "^20.16.5",
+		"@types/react": "^18.3.5",
+		"@types/react-dom": "^18.3.0",
+		"cross-env": "^7.0.3",
+		"eslint": "^8.57.0",
+		"eslint-config-next": "14.2.11",
+		"eslint-config-prettier": "^9.1.0",
+		"eslint-plugin-prettier": "^5.2.1",
+		"husky": "^8.0.0",
+		"lint-staged": "^15.2.10",
+		"postcss": "^8.4.47",
+		"prettier": "^3.3.3",
+		"tailwindcss": "^3.4.11",
+		"typescript": "^5.4.3"
+	}
+}

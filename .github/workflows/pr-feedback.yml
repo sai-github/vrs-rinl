@@ -1,0 +1,68 @@
+name: PR Health
+
+on: pull_request
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v3
+
+            - name: Set up Node.js
+              uses: actions/setup-node@v3
+              with:
+                  node-version: '18.18.0'
+                  cache: 'npm'
+
+            - name: Install dependencies
+              run: npm ci
+
+            - name: Analyze Bundle Size
+              run: |
+                  npm run build | tee build-output.txt
+                  # Extract the relevant part of the output
+                  sed -n '/Route (app)/,/^$/p' build-output.txt > bundle-size-report.txt
+
+            - name: Post Comment with Bundle Size
+              uses: actions/github-script@v6
+              with:
+                  script: |
+                      const fs = require('fs');
+                      if (fs.existsSync('bundle-size-report.txt')) {
+                        const bundleReport = fs.readFileSync('bundle-size-report.txt', 'utf8');
+                        const comment = `### Bundle Size Report\n\n\`\`\`\n${bundleReport}\n\`\`\``;
+                        github.rest.issues.createComment({
+                          ...context.repo,
+                          issue_number: context.issue.number,
+                          body: comment
+                        });
+                      } else {
+                        github.rest.issues.createComment({
+                          ...context.repo,
+                          issue_number: context.issue.number,
+                          body: '### Bundle Size Report\n\nNo bundle size information available.'
+                        });
+                      }
+
+    lint-commits:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v3
+              with:
+                  fetch-depth: 0
+
+            - name: Set up Node.js
+              uses: actions/setup-node@v3
+              with:
+                  node-version: '18.18.0'
+                  cache: 'npm'
+
+            - name: Install Commitlint
+              run: npm ci
+
+            - name: Verify Commits
+              run: npx commitlint --from ${{ github.event.pull_request.base.sha }} --to ${{ github.event.pull_request.head.sha }} --verbose
